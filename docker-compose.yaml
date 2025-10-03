@@ -1,0 +1,55 @@
+version: "3.9"
+
+services:
+  # Servidor baseado em Ubuntu
+  ubuntu-server:
+    image: ubuntu:20.04
+    container_name: ubuntu-server
+    command: sleep infinity
+    networks:
+      - rede_ubuntu_mysql
+    depends_on:
+      - mysql-db
+
+  # Banco de dados MySQL
+  mysql-db:
+    image: mysql:8.0
+    container_name: mysql-db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: exemplo
+      MYSQL_USER: user
+      MYSQL_PASSWORD: pass
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - rede_ubuntu_mysql
+
+  # Servidor baseado em CentOS
+  centos-server:
+    image: centos:7
+    container_name: centos-server
+    command: sleep infinity
+    networks:
+      - rede_centos_redis
+    depends_on:
+      - redis-db
+
+  # Banco de dados Redis
+  redis-db:
+    image: redis:latest
+    container_name: redis-db
+    volumes:
+      - redis_data:/data
+    networks:
+      - rede_centos_redis
+
+# Definição das redes
+networks:
+  rede_ubuntu_mysql:
+  rede_centos_redis:
+
+# Definição dos volumes
+volumes:
+  mysql_data:
+  redis_data:
